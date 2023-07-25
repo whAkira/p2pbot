@@ -29,6 +29,7 @@ module.exports = {
     success1: 'Банк успешно добавлен',
     success2: '',
     reject1: 'Вы уже добавили банк',
-
+    subscribe1: 'Подпишись на Kelpie Corp',
+    subscribe2: 'Подпишись на Kelpie News',
     subscribed: 'Я подписался'
 }

@@ -44,8 +44,8 @@ module.exports = async (bot, state, type, options) => {
 
         const botResponse = resp.map(([values, name]) => {
             const fistVal = values[0];
-            return `${name} ${fistVal}`;
-        }).join(' | ');
+            return `${name} | ${fistVal}`;
+        }).join('\n');
 
         const reply_markup = JSON.stringify({ inline_keyboard: [back_btn] })
 
