@@ -28,6 +28,8 @@ module.exports = async (bot, options, user) => {
             )
 
         let message = '';
+        let totalHold = 0
+
         for (const item of symbolArr) {
             const res = await fetchCMCData(
                 config.uri.COIN_MARKET_CAP,
@@ -39,13 +41,15 @@ module.exports = async (bot, options, user) => {
                 const priceUSD = assetData.quote.USD.price;
                 const totalValue = priceUSD * item.amount;
 
-                message += `${item.symbol} | Amount: ${item.amount} | Total: ${(totalValue).toFixed(2)}$\n`;
+                message += `${item.symbol} | Кол-во: ${item.amount} | Сумма: $${(totalValue).toFixed(2)}\n`;
+                totalHold += totalValue
             } else {
                 // Handle mismatched asset ids
                 console.log(`Mismatched id for asset: ${item.symbol}`);
             }
         }
 
+        message += `\n\n\*Общая сумма\* $${totalHold.toFixed(2)}`
 
         const reply_markup = JSON.stringify({ inline_keyboard: [back_btn] })
 

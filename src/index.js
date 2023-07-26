@@ -6,7 +6,6 @@ const UserController = require('./controllers/user_controller')
 
 const buttons = require('./handlers/index')
 const {main_keyboard, back_btn} = require("./keyboard");
-const {INTEGER} = require("sequelize");
 const {storeBank} = require("./handlers");
 
 const conf = require('./constants/config')
@@ -23,6 +22,7 @@ const start = async () => {
         const chatId = msg.chat.id;
         const user = msg.from;
         await UserController.store(user)
+
 
         const isChannel_1 = await bot.getChatMember(process.env.CHANNEL_ID1, user.id)
         const isChannel_2 = await bot.getChatMember(process.env.CHANNEL_ID2, user.id)
@@ -77,18 +77,23 @@ const start = async () => {
             if(userState[msg.chat.id].length === 2 && userState[msg.chat.id][1].startsWith('asset_')) {
                 try {
                     const symbol = userState[msg.chat.id][1].replace('asset_', '')
-                    const amount = parseInt(text)
+                    let amount = parseInt(text)
                     if(Number.isSafeInteger(amount)) {
+                        amount = Math.abs(amount);
+                        console.log(amount)
                         await UserController.storeUsersAssets((msg.chat.id).toString(), symbol, amount)
+
+                        const reply_markup = JSON.stringify({ inline_keyboard: [back_btn]})
+
+                        await bot.sendMessage(msg.chat.id, `${symbol} сохранен в ваши активы`, { reply_markup })
+                    } else if (!Number.isSafeInteger(amount)) {
+                        const reply_markup = JSON.stringify({ inline_keyboard: [back_btn]})
+
+                        await bot.sendMessage(msg.chat.id, `Введите актуальное количество ${symbol} которыми владеете`, { reply_markup })
                     }
-
-                    const reply_markup = JSON.stringify({ inline_keyboard: [back_btn]})
-
-                    await bot.sendMessage(msg.chat.id, `${symbol} сохранер в ваши активы`, { reply_markup })
                 } catch (e) {
                     console.log(e)
                 }
-
             }
         } catch (e) {
             console.log(e)
